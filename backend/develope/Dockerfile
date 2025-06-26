@@ -1,11 +1,13 @@
-FROM maven:3.8.6-openjdk-17 AS build
+# Stage 1: Build the app using Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17.0.1-jdk-slim
+# Stage 2: Run the built JAR
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/target/develope-0.0.1-SNAPSHOT.jar develope-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/develope-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8989
-ENTRYPOINT ["java", "-jar", "develope-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
