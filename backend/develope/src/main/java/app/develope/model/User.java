@@ -29,4 +29,7 @@ public class User {
     private boolean isActive;
     private String createdAt;
     private String updatedAt;
+
+    private String remeberToken;
+    private String resetPasswordToken;
 }

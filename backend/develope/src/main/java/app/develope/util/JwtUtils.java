@@ -14,8 +14,6 @@ import io.jsonwebtoken.Jwts;
 public class JwtUtils {
     @Value("${jwt.secret}")
     private String SECRET;
-    @Value("${jwt.expiration}")
-    private long EXPIRATION_TIME;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,12 +32,12 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Long EXPIRATION_TIME) {
         Map<String, Object> claims = Map.of();
-        return createToken(claims, username);
+        return createToken(claims, username, EXPIRATION_TIME);
     }
 
-    public String createToken(Map<String, Object> claims, String subject) {
+    public String createToken(Map<String, Object> claims, String subject, Long EXPIRATION_TIME) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -49,9 +47,8 @@ public class JwtUtils {
                 .compact();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        return !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

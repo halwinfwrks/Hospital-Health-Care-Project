@@ -1,7 +1,5 @@
 package app.develope.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,28 +48,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        return userRepository.findByUsername(user.getUsername());
     }
 
     @Override
-    public void updateUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User updateUser(User user) {
         userRepository.save(user);
+        return userRepository.findByUsername(user.getUsername());
     }
 
     @Override
-    public void deleteUser(String username) {
+    public Boolean deleteUser(String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
             userRepository.delete(user);
+            return true;
         }
+        return false;
     }
 
     @Override
     public boolean userExists(String username) {
-        return userRepository.existsByUsername(username);
+        if (userRepository.existsByUsername(username)) {
+            return true;
+        }
+        if (userRepository.existsByEmail(username)) {
+            return true;
+        }
+        return false;
     }
 
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public void clearRefreshToken(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            user.setRemeberToken(null);
+            userRepository.save(user);
+        } else {
+            System.out.println("User not found: " + username);
+        }
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
 }
