@@ -1,5 +1,6 @@
 package app.develope.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,13 +51,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedAt(new Date().toString());
+        user.setUpdatedAt(new Date().toString());
         userRepository.save(user);
         return userRepository.findByUsername(user.getUsername());
     }
 
     @Override
     public User updateUser(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null for update");
+        }
         userRepository.save(user);
+        user.setUpdatedAt(new Date().toString());
         return userRepository.findByUsername(user.getUsername());
     }
 
