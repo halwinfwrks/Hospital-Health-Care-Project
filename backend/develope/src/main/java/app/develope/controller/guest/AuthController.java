@@ -105,4 +105,20 @@ public class AuthController {
         userService.clearRefreshToken(request.getUsername());
         return ResponseEntity.ok("Logged out successfully");
     }
+
+    // @PostMapping("add-sample-user")
+    // public ResponseEntity<?> addSampleUser(@RequestBody AuthRequest request) {
+    //     try {
+    //         User sampleUser = new User();
+    //         sampleUser.setUsername(request.getUsername());
+    //         sampleUser.setPassword(request.getPassword());
+    //         sampleUser.setRoles("USER");
+    //         sampleUser.setActive(true);
+    //         userService.saveUser(sampleUser);
+    //         return ResponseEntity.ok("Sample user added successfully");
+    //     } catch (Exception e) {
+    //         log.error("{}: Error adding sample user: {}", TAG, e.getMessage(), e);
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add sample user");
+    //     }
+    // }
 }
